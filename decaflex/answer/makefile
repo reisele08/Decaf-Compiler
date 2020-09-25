@@ -7,14 +7,14 @@ cpptargets=decaflex
 
 all: $(targets) $(cpptargets)
 
-$(targets): %: %.lex
+$(targets): %: %.l
 	@echo "compiling lex file:" $<
 	@echo "output file:" $@
 	flex -o$@.c $<
 	gcc -o $(bindir)/$@ $@.c -l$(lexlib)
 	$(rm) $@.c
 
-$(cpptargets): %: %.lex
+$(cpptargets): %: %.l
 	@echo "compiling cpp lex file:" $<
 	@echo "output file:" $@
 	flex -o$@.cc $<
