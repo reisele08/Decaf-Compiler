@@ -7,6 +7,7 @@
 using namespace std;
 
 %}
+whitespace [\r|\t|\v|\f|\n| ]
 char [\a|\b|\t|\v|\f|\r -\!\#-\[\]-~]
 escaped_char \\(n|r|t|v|f|a|b|\\|\'|\")
 char_lit_chars [\a|\b|\t|\n|\v|\f|\r -/&/(-\[\]-~]
@@ -23,33 +24,38 @@ string_lit  {char}+|{escaped_char}*
 func                           { return 1; }
 int                            { return 2; }
 package                        { return 3; }
+bool                           { return 13; }
+break                          { return 14; }
+continue                       { return 18; }
+string                         { return 47; }
+true                           { return 48; }
+var                            { return 49; }
+void                           { return 50; }
+while                          { return 51; }
+else                           { return 21; }
+false                          { return 23; }
+for                            { return 24; }
+return                         { return 42; }
+null                           { return 39; }
+if                             { return 27; }
+extern                         { return 29; }
+({decimal_lit}+)|({hex_lit})   { return 28; }
 \{                             { return 4; }
 \}                             { return 5; }
 \(                             { return 6; }
 \)                             { return 7; }
 [a-zA-Z\_][a-zA-Z\_0-9]*       { return 8; }
-[\t\r\a\v\b ]+                 { return 9; }
-\n                             { return 10; }
-
-&&                             { return 11; }
-=                              { return 12; }
-bool                           { return 13; }
-break                          { return 14; }
+{whitespace}+                 { return 9; }
+\&\&                             { return 11; }
+\=                              { return 12; }
 \'{char_lit}\'                 { return 15; }
 \,                             { return 16; }
 \/\/{char_no_n1}\n             { return 17; }
-continue                       { return 18; }
 \/                             { return 19; }
 \.                             { return 20; }
-else                           { return 21; }
 \==                            { return 22; }
-false                          { return 23; }
-for                            { return 24; }
 \>=                            { return 25; }
 \>                             { return 26; }
-if                             { return 27; }
-({decimal_lit}+)|({hex_lit})   { return 28; }
-int                            { return 29; }
 \<<                            { return 30; }
 \<=                            { return 31; }
 \[                             { return 32; }
@@ -57,21 +63,14 @@ int                            { return 29; }
 \-                             { return 34; }
 \%                             { return 35; }
 \*                             { return 36; }
-\!=                            { return 37; }
+\!\=                            { return 37; }
 \!                             { return 38; }
-null                           { return 39; }
 \|\|                           { return 40; }
 \+                             { return 41; }
-return                         { return 42; }
 \>\>                           { return 43; }
 \]                             { return 44; }
 \;                             { return 45; }
 \"{string_lit}\"               { return 46; }
-string                         { return 47; }
-true                           { return 48; }
-var                            { return 49; }
-void                           { return 50; }
-while                          { return 51; }
 .                              { cerr << "Error: unexpected character in input" << endl; return -1; }
 
 %%
@@ -83,16 +82,23 @@ int main () {
       lexeme.assign(yytext);
       switch(token) {
         case 1: cout << "T_FUNC " << lexeme << endl; break;
-        case 2: cout << "T_INT " << lexeme << endl; break;
         case 3: cout << "T_PACKAGE " << lexeme << endl; break;
         case 4: cout << "T_LCB " << lexeme << endl; break;
         case 5: cout << "T_RCB " << lexeme << endl; break;
         case 6: cout << "T_LPAREN " << lexeme << endl; break;
         case 7: cout << "T_RPAREN " << lexeme << endl; break;
         case 8: cout << "T_ID " << lexeme << endl; break;
-        case 9: cout << "T_WHITESPACE " << lexeme << endl; break;
-        case 10: cout << "T_WHITESPACE \\n" << endl; break;
-
+        case 9:
+          cout << "T_WHITESPACE ";
+          for(int i = 0; i < lexeme.size(); ++i){
+              if(yytext[i] == '\n'){
+                cout << "\\n";
+              }
+              else{
+                cout << yytext[i];
+              }
+          }
+          cout << endl; break;
         case 11: cout << "T_AND " << lexeme << endl; break;
         case 12: cout << "T_ASSIGN " << lexeme << endl; break;
         case 13: cout << "T_BOOLTYPE " << lexeme << endl; break;
@@ -111,7 +117,8 @@ int main () {
         case 26: cout << "T_GT " << lexeme << endl; break;
         case 27: cout << "T_IF " << lexeme << endl; break;
         case 28: cout << "T_INTCONSTANT " << lexeme << endl; break;
-        case 29: cout << "T_INTTYPE " << lexeme << endl; break;
+        case 29: cout << "T_EXTERN " << lexeme << endl; break;
+        case 2: cout << "T_INTTYPE " << lexeme << endl; break;
         case 30: cout << "T_LEFTSHIFT " << lexeme << endl; break;
         case 31: cout << "T_LEQ " << lexeme << endl; break;
         case 32: cout << "T_LSB " << lexeme << endl; break;
