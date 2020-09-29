@@ -16,7 +16,7 @@ char_no_n1 [\a|\b|\t|\v|\f|\r| -~]+
 hex_digit [0-9A-Fa-f]
 decimal_lit [0-9]
 hex_lit (0(x|X){hex_digit}+) 
-string_lit  {char}+|{escaped_char}*
+string_lit  ({char}|{escaped_char})*
 %%
   /*
     Pattern definitions for all tokens
@@ -105,7 +105,14 @@ int main () {
         case 14: cout << "T_BREAK " << lexeme << endl; break;
         case 15: cout << "T_CHARCONSTANT " << lexeme << endl; break;
         case 16: cout << "T_COMMA " << lexeme << endl; break;
-        case 17: cout << "T_COMMENT " << lexeme << endl; break;
+        case 17:
+         cout << "T_COMMENT ";
+         for(int i = 0; i < lexeme.size(); ++i){
+           if(yytext[i] != '\n'){
+             cout << yytext[i];
+           }
+         }
+          cout << "\\n" << endl; break;
         case 18: cout << "T_CONTINUE " << lexeme << endl; break;
         case 19: cout << "T_DIV " << lexeme << endl; break;
         case 20: cout << "T_DOT " << lexeme << endl; break;
