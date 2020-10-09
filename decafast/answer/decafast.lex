@@ -94,7 +94,7 @@ extern                         { return T_EXTERN; }
 
 int yyerror(const char *s) {
   cerr << lineno << ": " << s << " at char " << tokenpos << endl;
-  return 1;
+  exit(EXIT_FAILURE);
 }
 
   /*
