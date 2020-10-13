@@ -85,7 +85,10 @@ using namespace std;
 %left T_UMINUS
 
 %type <ast> extern_list decafpackage
-
+%type <ast> decaf_type method_type field_list field_decl method_list method_decl typed_symbol
+%type <ast> method_block var_decl_list statement_list assign extern_type expr method_arg_list
+%type <ast> method_call if_stmt while_stmt for_stmt return_stmt break_stmt continue_stmt block method_arg
+%type <ast> bool_constant bool assign_list statement
 %%
 
 start: program
@@ -107,6 +110,269 @@ decafpackage: T_PACKAGE T_ID T_LCB T_RCB
     { $$ = new PackageAST(*$2, new decafStmtList(), new decafStmtList()); delete $2; }
     ;
 
+decaf_type: T_INTTYPE
+    {
+        $$ = new string("IntType");
+    }
+    | T_BOOLTYPE
+    {
+        $$ = new string("BoolType");
+    }
+    ;
+
+method_type: T_VOID
+    {
+        $$ = new string("VoidType");
+    }
+    | decaf_type
+    {
+        $$ = $1;
+    }
+    ;
+
+extern_type: T_STRINGTYPE
+    {
+        $$ = new string("StringType");
+    }
+    | decaf_type
+    {
+        $$ = $1;
+    }
+    ;
+
+package: T_PACKAGE T_ID T_LCB field_list method_list T_RCB
+    {
+        /* stub */
+    }
+    ;
+
+field_list:
+    {
+        /* stub */
+    }
+    ;
+
+field_decl:
+    {
+        /* stub */
+    }
+    ;
+field_size:
+    {
+        /* stub */
+    }
+    ;
+
+method_list:
+    {
+        /* stub */
+    }
+    ;
+method_decl:
+    {
+        /* stub */
+    }
+    ;
+typed_symbol: T_ID
+    {
+        $$ = new string("identifier name");
+    }
+    | decaf_type
+    {
+        $$ = $1;
+    }
+    ;
+
+method_block: var_decl_list statement_list
+    {
+        /* stub */
+    }
+    ;
+
+block: var_decl_list statement_list
+    {
+        /* stub */
+    }
+    ;
+
+statement: assign
+    {
+       $$ = $1; 
+    }
+    | method_call
+    {
+        $$ = $1;
+    }
+    | if_stmt
+    {
+        $$ = $1;
+    }
+    | while_stmt
+    {
+        $$ = $1;
+    }
+    | for_stmt
+    {
+        $$ = $1;
+    }
+    | return_stmt
+    {
+        $$ = $1;
+    }
+    | break_stmt
+    {
+        $$ = $1;
+    }
+    | continue_stmt
+    {
+        $$ = $1;
+    }
+    | block
+    {
+        $$ = $1;
+    }
+    ;
+
+if_stmt: T_IF T_LPAREN expr T_RPAREN block
+    {
+        /* stub */
+    }
+    | T_IF T_LPAREN expr T_RPAREN block T_ELSE block
+    {
+        /* stub */
+    }
+    ;
+while_stmt: T_WHILE T_LPAREN expr T_RPAREN block
+    {
+        /* stub */
+    }
+    ;
+for_stmt: T_FOR T_LPAREN assign_list T_SEMICOLON expr T_SEMICOLON assign_list T_RPAREN block
+    {
+        /* stub */
+    }
+    ;
+return_stmt: T_RETURN T_SEMICOLON
+    {
+        /* stub */
+    }
+    ;
+break_stmt: T_BREAK T_SEMICOLON
+    {
+        /* stub */
+    }
+    ;
+continue_stmt: T_CONTINUE T_SEMICOLON
+    {
+        /* stub */
+    }
+    ;
+
+assign: T_ID T_ASSIGN expr
+    {
+        /* stub */
+    }
+assign_list: assign assign_list
+    {
+        /* stub */
+    }
+    | assign
+    {
+        /* stub */
+    }
+    ;
+method_call: T_ID T_LPAREN T_RPAREN
+    {
+        /* stub */
+    }
+    | T_ID T_LPAREN method_arg_list T_RPAREN
+    {
+        /* stub */
+    }
+    ;
+method_arg: T_STRINGCONSTANT
+    {
+        /* stub */
+    }
+    | expr
+    {
+        $$ = $1;
+    }
+    ;
+
+rvalue: T_ID T_LSB expr T_RSB
+    {
+        /* stub */
+    }
+    | T_ID
+    {
+        /* stub */
+    }
+    ;
+expr: rvalue
+    {
+        /* stub */
+    }
+    ;
+constant: T_INTCONSTANT
+    {
+        /* stub */
+    }
+    | T_CHARCONSTANT
+    {
+        /* stub */
+    }
+    | bool_constant
+    {
+        /* stub */
+    }
+    ;
+bool: T_TRUE
+    {
+        $$ = new string("True");
+    }
+    | T_FALSE
+    {
+        $$ = new string("False");
+    }
+    ;
+
+bool_constant: T_TRUE
+    {
+        /* stub */
+    }
+    ;
+
+method_arg_list: 
+    {
+        /* stub */
+    }
+    ;
+
+statement_list: 
+    {
+        $$ = NULL;
+    }
+    | statement statement_list
+    {
+        /* stub */
+    }
+    ;
+
+var_decl_list:
+    {
+        $$ = NULL;
+    }
+    | var_decl var_decl_list
+    {
+        /* stub */
+    }
+    ;
+var_decl: decaf_type T_ID T_SEMICOLON
+    {
+        /* stub */
+    }
+    ;
 %%
 
 int main() {
