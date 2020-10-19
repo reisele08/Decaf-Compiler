@@ -8,7 +8,9 @@
 #include <string>
 #include <stdexcept>
 #include <vector>
-
+#include <algorithm>
+#include <iostream>
+#include <list>
 
 extern int lineno;
 extern int tokenpos;

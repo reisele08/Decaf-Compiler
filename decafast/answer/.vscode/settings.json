@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "xstring": "cpp",
+        "system_error": "cpp",
+        "type_traits": "cpp",
+        "xtr1common": "cpp",
+        "xlocale": "cpp",
+        "list": "cpp",
+        "iostream": "cpp"
+    }
+}
