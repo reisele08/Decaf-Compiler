@@ -132,9 +132,9 @@ start: program
 program: extern_list decafpackage
     { 
         ProgramAST *prog = new ProgramAST((decafStmtList *)$1, (PackageAST *)$2); 
-		if (printAST) {
-			cout << getString(prog) << endl;
-		}
+    if (printAST) {
+      cout << getString(prog) << endl;
+    }
         try {
             prog->Codegen();
         } 
@@ -184,7 +184,7 @@ extern_type_list: extern_type T_COMMA extern_type_list
         slist->push_front(varDef);
         $$ = slist;
         delete $1;     
-	}
+  }
     | 
     {
         decafStmtList* slist = new decafStmtList();
@@ -206,10 +206,10 @@ extern_type: T_STRINGTYPE
 ignore: ignore T_ID
     | ignore T_LCB
     | ignore T_RCB
-	| T_ID
-	| T_LCB
-	| T_RCB
-	;
+  | T_ID
+  | T_LCB
+  | T_RCB
+  ;
 var_decl: T_VAR id_list decaf_type T_SEMICOLON
     {
         decafStmtList* slist = new decafStmtList();

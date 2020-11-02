@@ -23,10 +23,10 @@ using namespace std;
 
 extern "C"
 {
-	extern int yyerror(const char *);
-	int yyparse(void);
-	int yylex(void);  
-	int yywrap(void);
+  extern int yyerror(const char *);
+  int yyparse(void);
+  int yylex(void);  
+  int yywrap(void);
 }
 
 typedef struct descriptor 
