@@ -132,7 +132,7 @@ extern_defn: T_EXTERN T_FUNC T_ID T_LPAREN extern_type_list T_RPAREN method_type
         delete $3, $7;
     }
     ;
-    /* PROBABLY GOOD */
+    /* NEEDS 'EMPTY' DEF */
 extern_type_list: extern_type T_COMMA extern_type_list
     {
         decafStmtList* slist = (decafStmtList*)$3;
@@ -198,7 +198,8 @@ field_list:
         $$ = list;
     }
     ;
- 
+
+    /* missing some defns */
 field_decl: T_VAR id_list decaf_type T_SEMICOLON
     {
         decafStmtList* slist = new decafStmtList();
@@ -212,7 +213,7 @@ field_decl: T_VAR id_list decaf_type T_SEMICOLON
     }
     ;
 
-    /* MIXING UP VAR DECLS ON SINGLE LINE?? */
+    /* PROBABLY GOOD */
 id_list: T_ID T_COMMA id_list
     {
         vector<string>* idList = $3;
