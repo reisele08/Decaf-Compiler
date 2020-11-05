@@ -230,6 +230,7 @@ public:
 		return NULL;	
 	} 
 };
+
 //VALUE AST
 class variableExprAST : public decafAST{
 	string Name;
@@ -319,7 +320,6 @@ class varDefAST : public decafAST{
 	bool Params;
 	string Name;
 	string Type;
-	//decafType Type;
 public:
 	varDefAST(bool params, string name, string type)
 		: Params(params), Name(name), Type(type){}
@@ -574,7 +574,6 @@ public:
 class methodAST : public decafAST{
 	string Name;
 	string Return_Type;
-	//decafType Return_Type;
 	decafStmtList *Param_List;
 	methodBlockAST *Block;
 public:
@@ -587,14 +586,62 @@ public:
   	string str(){
 	return string("Method") + "(" + Name + "," + Return_Type + "," + getString(Param_List) + "," + getString(Block) + ")";
 	}
-	
+
+	llvm::Function* funct(){
+		
+		llvm::Function *func;
+		list<decafAST*> stmnts;
+		llvm::Type *returnTy;
+		vector<string> arg_names;
+		vector<llvm::Type*> arg_types;
+
+		print_debug(debug, "method_funct_codegen_RETURN_TY");
+		returnTy = getType(Return_Type);
+
+		print_debug(debug, "method_funct_codegen_PARAM_LIST");
+		if(Param_List != NULL){
+			stmnts = Param_List->retList();
+			Param_List->Codegen();
+		}
+		print_debug(debug, "method_funct_codegen_FORLOOP");
+		for(list<decafAST*>::iterator i = stmnts.begin(); i != stmnts.end(); i++){
+			varDefAST* varDef = (varDefAST*)(*i);
+      		llvm::Type* type = getType(varDef->getVar());
+      		string name = varDef->getName(); 
+
+      		arg_types.push_back(type);  
+      		arg_names.push_back(name);			
+		}
+
+		func = llvm::Function::Create(llvm::FunctionType::get(returnTy, arg_types, false), llvm::Function::ExternalLinkage, Name, TheModule);
+		print_debug(debug, "method_funct_codegen_DESC");
+		descriptor* descrptr = new descriptor;
+		descrptr->arg_names = arg_names;
+		descrptr->arg_types = arg_types;
+		descrptr->funct = func;
+		descrptr->lineno = lineno;
+		descrptr->type = Return_Type;
+
+		(symtbl.front())[Name] = descrptr;
+
+		return func;
+	} 
 	llvm::Value *Codegen(){
-		print_debug(debug, "method_codegen_START");
+
+		print_debug(debug, "method codegen");
 
 		llvm::Type *returnTy = getType(Return_Type);
 		list<decafAST*> stmnts;
 
 		descriptor* descrptr = access_symtbl(Name);
+
+		print_debug(debug, "method_codegen_BUILDER");
+		if(returnTy->isIntegerTy(32)){
+			retVal = Builder.getInt32(0);
+		}
+		else{
+			retVal = Builder.getInt1(1) ;
+		}
 
 		if(Param_List != NULL){
 			stmnts = Param_List->retList();
@@ -603,7 +650,6 @@ public:
 
 		vector<llvm::Type*> arg_types;
 		vector<string> arg_names;
-
 		print_debug(debug, "method_codegen_FORLOOP");
 		for(list<decafAST*>:: iterator i = stmnts.begin(); i != stmnts.end(); i++){
 			varDefAST* varDef = (varDefAST*)(*i);
@@ -613,7 +659,7 @@ public:
 			arg_types.push_back(type);
 		}
 		llvm::Function *func;
-		print_debug(debug, "method_codegen_DESCRIPTOR");
+		print_debug(debug, "method_funct_codegen_DESCTRIPTOR");
 		if(descrptr == NULL){
 			func = llvm::Function::Create(llvm::FunctionType::get(returnTy, arg_types, false), llvm::Function::ExternalLinkage, Name, TheModule);
 
@@ -629,7 +675,7 @@ public:
 		else{
 			func = descrptr->funct;
 		}
-
+		print_debug(debug, "method_codegen_BB");
 		llvm::BasicBlock *BB = llvm::BasicBlock::Create(TheContext, "entry", func);
 
 		Builder.SetInsertPoint(BB);
@@ -646,13 +692,20 @@ public:
 
 			descrptr->alloc = Alloca;
 		}
-	
+		print_debug(debug, "method_codegen_ifBUILDER");
+		if(Block != NULL){
+			Block->Codegen();
+		}
+		if(returnTy->isVoidTy()){
+			Builder.CreateRet(NULL);
+		}
+		else{
+			Builder.CreateRet(retVal);
+		}
 		print_debug(debug, "method_codegen_VERIFY");
 		verifyFunction(*func);
 		print_debug(debug, "method_codegen_END");
-
 		return (llvm::Value*)func;
-
 	} 
 };
 
@@ -678,9 +731,14 @@ public:
 			val = FieldDeclList->Codegen();
 		}
 		if (NULL != MethodDeclList) {
+			list<decafAST*> stmts = MethodDeclList->retList();
+			for(list<decafAST*>::iterator i = stmts.begin(); i != stmts.end(); i++){
+				methodAST* method = (methodAST*)(*i);
+
+				method->funct();
+			}
 			val = MethodDeclList->Codegen();
-		} 
-		// Q: should we enter the class name into the symbol table?
+		}
 		print_debug(debug, "package_END");
 		return val; 
 	}
@@ -689,7 +747,6 @@ public:
 class externAST : public decafAST{
 	string Name;
 	string Return_Type;
-	//decafType *ReturnType;
 	decafStmtList* Typelist;
 public:
 	externAST(string name, string return_type, decafStmtList *typelist)
