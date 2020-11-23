@@ -14,6 +14,7 @@
 #include <string>
 #include <stdexcept>
 #include <vector>
+#include <list>
 
 extern int lineno;
 extern int tokenpos;
@@ -22,11 +23,20 @@ using namespace std;
 
 extern "C"
 {
-	extern int yyerror(const char *);
-	int yyparse(void);
-	int yylex(void);  
-	int yywrap(void);
+  extern int yyerror(const char *);
+  int yyparse(void);
+  int yylex(void);  
+  int yywrap(void);
 }
 
-#endif
+typedef struct{
+  std::string* array_size;
+  std::string* array_type;
+}arrayinfo;
 
+typedef map<string, llvm::Value*> symbol_table;
+typedef list<symbol_table> symbol_table_list;
+extern symbol_table_list symtbl;
+extern llvm::Value* access_symtbl(string id);
+
+#endif

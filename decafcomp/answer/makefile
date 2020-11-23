@@ -1,4 +1,4 @@
-llvmconfig:=llvm-config
+llvmconfig:=llvm-config-10
 cppflags=-Wno-deprecated-register
 lexlib=l
 yacclib=y
