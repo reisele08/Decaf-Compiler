@@ -1,0 +1,15 @@
+extern func print_int(int) void;
+
+package C {
+    func test(a int, b int) int{
+        return(a + b);
+    }
+
+    func main() int {
+        var x int;
+        var y int;
+        x = test(2, 3);
+        y = test(1, 2);
+        print_int(x - y);
+    }
+}

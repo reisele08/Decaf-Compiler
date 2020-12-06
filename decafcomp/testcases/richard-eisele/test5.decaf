@@ -1,0 +1,27 @@
+extern func print_int(int) void;
+
+package Test{
+	func main() int{
+		var a int;
+        var b int;
+        var c int;
+        var d int;
+        a = 1;
+        b = 2;
+        c = 9;
+			if(a == 0){
+				if(a<b){
+                    print_int(a);
+                }
+			}
+            else{
+                if(a>b){
+                    print_int(b);
+                }
+                else{
+                    print_int(c);
+                }
+            }
+
+		}
+}

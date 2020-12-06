@@ -1,0 +1,13 @@
+extern func print_int(int) void;
+package Test{
+	func main() int{
+		var x int;
+		x = 0;
+			if(x = 0){
+				print_int(1);
+			}
+			else{
+				print_int(2);
+			}
+		}
+}

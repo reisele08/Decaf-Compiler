@@ -1,0 +1,14 @@
+extern func print_int(int) void;
+package Test {
+    func main() int{
+        var i int;
+        var a int;
+        i = 0;
+        a = 0;
+
+        for(i = 0; i < 4; i = i + 1){
+            a = a + 2;
+        }
+        print_int(a);
+    }
+}

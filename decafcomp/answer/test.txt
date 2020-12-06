@@ -1,7 +1,9 @@
-package C {
-	func f() void {
-		if (leftPtr >= rightPtr) {
-			x = 1;
-		}
-	}
+extern func print_int(int) void;
+package Test {
+    func main() int
+    {
+        var x int;
+        print_int(5 + 7);
+        print_int(5 + -7);
+    }
 }

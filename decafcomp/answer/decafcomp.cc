@@ -969,7 +969,6 @@ class breakStmtAST : public decafAST{
     if(BreakBB != NULL){
       Builder.CreateBr(BreakBB);
     }  
-
   }
 };
 
@@ -983,7 +982,6 @@ class continueStmtAST : public decafAST{
     if(ContinueBB != NULL){
       Builder.CreateBr(ContinueBB);
     }
-
   }
 };
 
@@ -1006,7 +1004,7 @@ public:
     return string("ForStmt") + "(" + getString(Pre_Assign_List) + "," + getString(Condition) + "," + getString(Loop_Assign_List) + "," + getString(For_Block) + ")";
   }
   llvm::Value *Codegen(){
-
+	print_debug(debug, "forstmt_START");
 	llvm::Function *func = Builder.GetInsertBlock()->getParent();
     
     llvm::BasicBlock* ForBB = llvm::BasicBlock::Create(TheContext, "for", func);
@@ -1023,7 +1021,6 @@ public:
 
     Builder.CreateCondBr(Cond, ForBodyBB, ForEndBB);
     Builder.SetInsertPoint(ForBodyBB);
-
     For_Block->Codegen();
 
     Builder.CreateBr(ForAssignBB);
@@ -1033,6 +1030,7 @@ public:
     Builder.CreateBr(ForBB);
 
     Builder.SetInsertPoint(ForEndBB);
+	return ForEndBB;
   }
 };
 
